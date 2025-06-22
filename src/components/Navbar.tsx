@@ -15,8 +15,12 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">M</span>
+            <div className="w-8 h-8 flex items-center justify-center">
+              <img 
+                src="/lovable-uploads/446cd607-5fde-4c3e-b376-44f6984641d5.png" 
+                alt="Mythara Logo" 
+                className="w-8 h-8"
+              />
             </div>
             <span className="text-xl font-bold text-gray-900">Mythara</span>
           </Link>
