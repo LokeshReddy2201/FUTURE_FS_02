@@ -107,7 +107,7 @@ const ProductDetails = () => {
           </div>
 
           <div className="text-4xl font-bold text-gray-900">
-            ${product.price}
+            ₹{product.price.toLocaleString('en-IN')}
           </div>
 
           <div className="prose max-w-none">
@@ -160,7 +160,7 @@ const ProductDetails = () => {
           <div className="bg-gray-50 rounded-lg p-4">
             <h3 className="font-semibold text-gray-900 mb-2">Product Details</h3>
             <ul className="space-y-1 text-gray-600">
-              <li>• Free shipping on orders over $50</li>
+              <li>• Free shipping on orders over ₹4,000</li>
               <li>• 30-day return policy</li>
               <li>• 1-year warranty included</li>
               <li>• Secure payment processing</li>

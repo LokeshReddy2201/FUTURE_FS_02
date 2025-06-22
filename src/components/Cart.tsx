@@ -78,7 +78,7 @@ const Cart = () => {
                     </Link>
                     <p className="text-gray-600">{item.category}</p>
                     <p className="text-xl font-bold text-gray-900 mt-1">
-                      ${item.price}
+                      ₹{item.price.toLocaleString('en-IN')}
                     </p>
                   </div>
 
@@ -128,21 +128,21 @@ const Cart = () => {
             <div className="space-y-3 mb-4">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal ({state.itemCount} items)</span>
-                <span>${state.total.toFixed(2)}</span>
+                <span>₹{state.total.toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Shipping</span>
-                <span>{state.total > 50 ? 'Free' : '$9.99'}</span>
+                <span>{state.total > 4000 ? 'Free' : '₹829'}</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Tax</span>
-                <span>${(state.total * 0.08).toFixed(2)}</span>
+                <span>₹{(state.total * 0.18).toLocaleString('en-IN')}</span>
               </div>
               <div className="border-t pt-3">
                 <div className="flex justify-between text-lg font-bold text-gray-900">
                   <span>Total</span>
                   <span>
-                    ${(state.total + (state.total > 50 ? 0 : 9.99) + state.total * 0.08).toFixed(2)}
+                    ₹{(state.total + (state.total > 4000 ? 0 : 829) + state.total * 0.18).toLocaleString('en-IN')}
                   </span>
                 </div>
               </div>
@@ -157,7 +157,7 @@ const Cart = () => {
 
             <div className="mt-4 text-center">
               <p className="text-sm text-gray-600">
-                Free shipping on orders over $50
+                Free shipping on orders over ₹4,000
               </p>
             </div>
           </div>

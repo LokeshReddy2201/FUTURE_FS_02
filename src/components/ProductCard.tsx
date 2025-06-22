@@ -80,7 +80,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           <div className="flex items-center justify-between">
             <span className="text-2xl font-bold text-gray-900">
-              ${product.price}
+              ₹{product.price.toLocaleString('en-IN')}
             </span>
             
             <Button
