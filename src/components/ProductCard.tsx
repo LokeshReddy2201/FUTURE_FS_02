@@ -2,9 +2,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Star } from 'lucide-react';
-import { Product, useCart } from '../context/CartContext';
+import { useCart } from '../context/CartContext';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import { Product } from '@/hooks/useProducts';
 
 interface ProductCardProps {
   product: Product;
@@ -12,12 +14,22 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { dispatch } = useCart();
+  const { user } = useAuth();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
-    if (!product.inStock) {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to add products to your cart.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!product.in_stock) {
       toast({
         title: "Out of Stock",
         description: "This product is currently unavailable.",
@@ -26,7 +38,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       return;
     }
 
-    dispatch({ type: 'ADD_TO_CART', payload: product });
+    // Convert Supabase product to cart product format
+    const cartProduct = {
+      id: Number(product.id.split('-')[0]) || Math.floor(Math.random() * 1000000), // Convert UUID to number for cart compatibility
+      name: product.name,
+      price: Number(product.price),
+      image: product.image_url || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400',
+      category: product.categories?.name || 'Uncategorized',
+      description: product.description || '',
+      rating: Number(product.rating) || 0,
+      reviews: product.reviews_count || 0,
+      inStock: product.in_stock || false,
+    };
+
+    dispatch({ type: 'ADD_TO_CART', payload: cartProduct });
     toast({
       title: "Added to Cart",
       description: `${product.name} has been added to your cart.`,
@@ -38,18 +63,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <Link to={`/product/${product.id}`} className="block">
         <div className="relative overflow-hidden">
           <img
-            src={product.image}
+            src={product.image_url || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400'}
             alt={product.name}
             className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          {!product.inStock && (
+          {!product.in_stock && (
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
               <span className="text-white font-semibold text-lg">Out of Stock</span>
             </div>
           )}
           <div className="absolute top-3 left-3">
             <span className="bg-white px-2 py-1 rounded-full text-xs font-medium text-gray-600">
-              {product.category}
+              {product.categories?.name || 'Uncategorized'}
             </span>
           </div>
         </div>
@@ -66,7 +91,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                   key={i}
                   size={14}
                   className={`${
-                    i < Math.floor(product.rating)
+                    i < Math.floor(Number(product.rating) || 0)
                       ? 'text-yellow-400 fill-current'
                       : 'text-gray-300'
                   }`}
@@ -74,18 +99,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               ))}
             </div>
             <span className="text-sm text-gray-600">
-              {product.rating} ({product.reviews})
+              {Number(product.rating).toFixed(1)} ({product.reviews_count || 0})
             </span>
           </div>
 
           <div className="flex items-center justify-between">
             <span className="text-2xl font-bold text-gray-900">
-              ₹{product.price.toLocaleString('en-IN')}
+              ₹{Number(product.price).toLocaleString('en-IN')}
             </span>
             
             <Button
               onClick={handleAddToCart}
-              disabled={!product.inStock}
+              disabled={!product.in_stock || !user}
               size="sm"
               className="flex items-center space-x-1"
             >

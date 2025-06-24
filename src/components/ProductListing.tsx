@@ -1,10 +1,8 @@
 
 import React, { useState, useMemo } from 'react';
-import { Search, Filter } from 'lucide-react';
-import { products } from '../data/products';
+import { Search, Filter, Loader2 } from 'lucide-react';
 import ProductCard from './ProductCard';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -12,22 +10,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useProducts } from '@/hooks/useProducts';
+import { useAuth } from '@/hooks/useAuth';
 
 const ProductListing = () => {
+  const { user } = useAuth();
+  const { products, loading, error } = useProducts();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('name');
 
   const categories = useMemo(() => {
-    const categorySet = new Set(products.map(product => product.category));
+    const categorySet = new Set(products.map(product => product.categories?.name).filter(Boolean));
     return ['all', ...Array.from(categorySet)];
-  }, []);
+  }, [products]);
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter(product => {
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          product.description.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+                          (product.description || '').toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === 'all' || product.categories?.name === selectedCategory;
       
       return matchesSearch && matchesCategory;
     });
@@ -36,11 +38,11 @@ const ProductListing = () => {
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'price-low':
-          return a.price - b.price;
+          return Number(a.price) - Number(b.price);
         case 'price-high':
-          return b.price - a.price;
+          return Number(b.price) - Number(a.price);
         case 'rating':
-          return b.rating - a.rating;
+          return (Number(b.rating) || 0) - (Number(a.rating) || 0);
         case 'name':
         default:
           return a.name.localeCompare(b.name);
@@ -48,7 +50,29 @@ const ProductListing = () => {
     });
 
     return filtered;
-  }, [searchQuery, selectedCategory, sortBy]);
+  }, [products, searchQuery, selectedCategory, sortBy]);
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex justify-center items-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="ml-2 text-gray-600">Loading products...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="text-center py-16">
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">Error loading products</h3>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -60,6 +84,11 @@ const ProductListing = () => {
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
           Find everything you need from our carefully curated collection of premium products
         </p>
+        {!user && (
+          <p className="text-sm text-blue-600 mt-4">
+            Please sign in to add products to your cart and make purchases
+          </p>
+        )}
       </div>
 
       {/* Search and Filters */}

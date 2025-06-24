@@ -3,17 +3,47 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { CartProvider } from './context/CartContext';
+import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import Navbar from './components/Navbar';
 import ProductListing from './components/ProductListing';
 import ProductDetails from './components/ProductDetails';
 import Cart from './components/Cart';
 import Checkout from './components/Checkout';
 import CheckoutSuccess from './components/CheckoutSuccess';
+import Auth from './components/Auth';
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+  
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
+  
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+const AuthRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+  
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
+  
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
+  
+  return <>{children}</>;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -21,21 +51,61 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <CartProvider>
-          <div className="min-h-screen bg-gray-50">
-            <Navbar />
-            <main>
+        <AuthProvider>
+          <CartProvider>
+            <div className="min-h-screen bg-gray-50">
               <Routes>
-                <Route path="/" element={<ProductListing />} />
-                <Route path="/product/:id" element={<ProductDetails />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/success" element={<CheckoutSuccess />} />
-                <Route path="*" element={<NotFound />} />
+                <Route 
+                  path="/auth" 
+                  element={
+                    <AuthRoute>
+                      <Auth />
+                    </AuthRoute>
+                  } 
+                />
+                <Route 
+                  path="/*" 
+                  element={
+                    <>
+                      <Navbar />
+                      <main>
+                        <Routes>
+                          <Route path="/" element={<ProductListing />} />
+                          <Route path="/product/:id" element={<ProductDetails />} />
+                          <Route 
+                            path="/cart" 
+                            element={
+                              <ProtectedRoute>
+                                <Cart />
+                              </ProtectedRoute>
+                            } 
+                          />
+                          <Route 
+                            path="/checkout" 
+                            element={
+                              <ProtectedRoute>
+                                <Checkout />
+                              </ProtectedRoute>
+                            } 
+                          />
+                          <Route 
+                            path="/success" 
+                            element={
+                              <ProtectedRoute>
+                                <CheckoutSuccess />
+                              </ProtectedRoute>
+                            } 
+                          />
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
+                      </main>
+                    </>
+                  } 
+                />
               </Routes>
-            </main>
-          </div>
-        </CartProvider>
+            </div>
+          </CartProvider>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
