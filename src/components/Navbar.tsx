@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Home, User, LogOut } from 'lucide-react';
+import { ShoppingCart, Home, User, LogOut, Store } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -52,6 +52,18 @@ const Navbar = () => {
             >
               <Home size={18} />
               <span>Home</span>
+            </Link>
+
+            <Link
+              to="/fake-store"
+              className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                isActive('/fake-store') 
+                  ? 'text-blue-600 bg-blue-50' 
+                  : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+              }`}
+            >
+              <Store size={18} />
+              <span>Fake Store</span>
             </Link>
 
             <Link

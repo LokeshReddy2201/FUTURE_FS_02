@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +13,7 @@ import Checkout from './components/Checkout';
 import CheckoutSuccess from './components/CheckoutSuccess';
 import Auth from './components/Auth';
 import NotFound from "./pages/NotFound";
+import FakeStoreProducts from './components/FakeStoreProducts';
 
 const queryClient = new QueryClient();
 
@@ -71,6 +71,7 @@ const App = () => (
                       <main>
                         <Routes>
                           <Route path="/" element={<ProductListing />} />
+                          <Route path="/fake-store" element={<FakeStoreProducts />} />
                           <Route path="/product/:id" element={<ProductDetails />} />
                           <Route 
                             path="/cart" 
