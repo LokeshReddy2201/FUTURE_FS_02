@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,7 +7,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { CartProvider } from './context/CartContext';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import Navbar from './components/Navbar';
-import ProductListing from './components/ProductListing';
 import ProductDetails from './components/ProductDetails';
 import Cart from './components/Cart';
 import Checkout from './components/Checkout';
@@ -70,8 +70,7 @@ const App = () => (
                       <Navbar />
                       <main>
                         <Routes>
-                          <Route path="/" element={<ProductListing />} />
-                          <Route path="/fake-store" element={<FakeStoreProducts />} />
+                          <Route path="/" element={<FakeStoreProducts />} />
                           <Route path="/product/:id" element={<ProductDetails />} />
                           <Route 
                             path="/cart" 

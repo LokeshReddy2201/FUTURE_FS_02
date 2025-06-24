@@ -106,10 +106,10 @@ const FakeStoreProducts = () => {
       {/* Header */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Fake Store Products
+          Welcome to Mythara Store
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Products fetched from the Fake Store API
+          Discover amazing products from our curated collection
         </p>
         {!user && (
           <p className="text-sm text-blue-600 mt-4">
