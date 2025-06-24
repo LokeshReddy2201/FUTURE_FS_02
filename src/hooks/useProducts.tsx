@@ -20,9 +20,7 @@ export const useProducts = () => {
           .select(`
             *,
             categories (
-              id,
-              name,
-              description
+              *
             )
           `)
           .order('created_at', { ascending: false });
