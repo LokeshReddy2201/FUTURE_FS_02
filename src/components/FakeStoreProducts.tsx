@@ -140,7 +140,7 @@ const FakeStoreProducts = () => {
                 
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-2xl font-bold text-gray-900">
-                    ${product.price.toFixed(2)}
+                    ₹{(product.price * 83).toFixed(2)}
                   </span>
                   <div className="flex items-center space-x-1">
                     <span className="text-yellow-400">★</span>
