@@ -1,16 +1,14 @@
-# Welcome to lokesh portfolio
+# Welcome to mytharashopping website 
 
 ## Project info
 
-**URL**: https://lokesh-protofolio-v6p2.vercel.app/
+**URL**:https://mytharashopping-lokesh-reddys-projects-e1ac0c16.vercel.app/
 
 ## How can I edit this code?
 
 There are several ways of editing your application.
 
-**Use Lovable**
 
-Simply visit the [Lovable Project]((https://lokesh-protofolio-v6p2.vercel.app/) and start prompting.
 
 **Use your preferred IDE**
 
